@@ -1,0 +1,1 @@
+1,RecursosHumanos,Sistema,Nómina,rrhh@empresa.com,rrhh,nominas123
