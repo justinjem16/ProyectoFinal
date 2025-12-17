@@ -3,8 +3,12 @@
     <type>org.netbeans.modules.java.j2seproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
+<<<<<<< HEAD
             <name>Proyecto_Entidades</name>
             <name>ProyectoFinal</name>
+=======
+            <name>Proyecto_LogicaNegocio</name>
+>>>>>>> master
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
