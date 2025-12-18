@@ -8,39 +8,28 @@ import AccesoDatos.IdControl;
 import Entidades.Empleado;
 import Utilidades.NombresArchivos;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
- * Clase que maneja toda la lógica de negocio relacionada con los empleados.
- * Proporciona métodos para agregar, actualizar, eliminar y listar empleados,
- * gestionando la persistencia de datos a través de archivos.
+ * Lógica de negocio para empleados.
  * 
- * @author Justin
+ * @author Rachell Mora Reyes
  */
 public class LogicaEmpleado extends LogicaBase {
     
-    /** Controlador de IDs únicos para los empleados */
     private IdControl idControl;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
-    /**
-     * Crea una nueva instancia de LogicaEmpleado.
-     * Configura el archivo de datos de empleados para las operaciones de acceso.
-     */
     public LogicaEmpleado() {
         accesoDatos.setNombreArchivo(NombresArchivos.EMPLEADOS.getNombreArchivo());
     }
     
-    /**
-     * Agrega un nuevo empleado al sistema.
-     * Le asigna automáticamente un ID único y guarda toda su información en el archivo.
-     * El empleado se almacena en formato CSV con todos sus datos.
-     * 
-     * @param empleado objeto con la información del empleado a agregar
-     * @throws IOException si ocurre un error al escribir en el archivo
-     */
     public void agregarEmpleado(Empleado empleado) throws IOException {
         idControl = new IdControl();
         empleado.setId(idControl.getNextId(NombresArchivos.EMPLEADOS.getNombreArchivo()));
         
+        // FORMATO MODIFICADO: Ahora incluye la fecha de ingreso al final
         accesoDatos.setRegistro(
             String.valueOf(empleado.getId()) + "," +
             empleado.getCedula() + "," +
@@ -51,22 +40,17 @@ public class LogicaEmpleado extends LogicaBase {
             empleado.getTelefono() + "," +
             String.valueOf(empleado.getSalarioBruto()) + "," +
             empleado.getTipoPlanilla() + "," +
-            empleado.getPuesto()
+            empleado.getPuesto() + "," +
+            (empleado.getFechaIngreso() != null ? empleado.getFechaIngreso().format(DATE_FORMATTER) : "")
         );
         
         accesoDatos.agregarRegistro();
     }
     
-    /**
-     * Actualiza la información de un empleado existente.
-     * Busca el empleado por su ID y reemplaza todos sus datos con la nueva información.
-     * El ID del empleado no puede ser modificado.
-     * 
-     * @param empleado objeto con la información actualizada del empleado
-     * @throws IOException si ocurre un error al modificar el archivo
-     */
     public void actualizarEmpleado(Empleado empleado) throws IOException {
         accesoDatos.setIdRegistro(empleado.getId());
+        
+        // FORMATO MODIFICADO: Ahora incluye la fecha de ingreso al final
         accesoDatos.setRegistro(
             String.valueOf(empleado.getId()) + "," +
             empleado.getCedula() + "," +
@@ -77,46 +61,45 @@ public class LogicaEmpleado extends LogicaBase {
             empleado.getTelefono() + "," +
             String.valueOf(empleado.getSalarioBruto()) + "," +
             empleado.getTipoPlanilla() + "," +
-            empleado.getPuesto()
+            empleado.getPuesto() + "," +
+            (empleado.getFechaIngreso() != null ? empleado.getFechaIngreso().format(DATE_FORMATTER) : "")
         );
         accesoDatos.setEliminar(false);
         accesoDatos.modificarRegistro();
     }
     
-    /**
-     * Elimina un empleado del sistema.
-     * Busca el empleado por su ID y lo elimina permanentemente del archivo.
-     * Esta operación no puede deshacerse.
-     * 
-     * @param empleado objeto con el ID del empleado a eliminar
-     * @throws IOException si ocurre un error al modificar el archivo
-     */
     public void eliminarEmpleado(Empleado empleado) throws IOException {
         accesoDatos.setIdRegistro(empleado.getId());
         accesoDatos.setEliminar(true);
         accesoDatos.modificarRegistro();
     }
     
-    /**
-     * Carga todos los empleados del archivo y los agrega a la lista del objeto empleado.
-     * Lee cada registro del archivo, crea objetos Empleado y los añade a la lista.
-     * Solo procesa registros completos con los 10 campos esperados.
-     * 
-     * @param empleado objeto donde se almacenará la lista de empleados cargados
-     * @throws IOException si ocurre un error al leer el archivo
-     */
     public void listarEmpleados(Empleado empleado) throws IOException {
         accesoDatos.setNombreArchivo(NombresArchivos.EMPLEADOS.getNombreArchivo());
         accesoDatos.listarRegistros();
         
         for (String[] datos : accesoDatos.getListaRegistros()) {
-            if (datos.length == 10) {
+            // MODIFICADO: Ahora soporta tanto el formato antiguo (10 campos) como el nuevo (11 campos)
+            if (datos.length >= 10) {
+                LocalDate fechaIngreso = null;
+                
+                // Si tiene el campo 11 (fecha de ingreso), parsearlo
+                if (datos.length == 11 && !datos[10].isEmpty()) {
+                    try {
+                        fechaIngreso = LocalDate.parse(datos[10], DATE_FORMATTER);
+                    } catch (Exception e) {
+                        // Si falla el parseo, dejar null
+                        fechaIngreso = null;
+                    }
+                }
+                
                 Empleado emp = new Empleado(
                     Integer.parseInt(datos[0]),
                     datos[1], datos[2], datos[3], datos[4],
                     datos[5], datos[6],
                     Double.parseDouble(datos[7]),
-                    datos[8], datos[9]
+                    datos[8], datos[9],
+                    fechaIngreso // NUEVO PARÁMETRO
                 );
                 empleado.agregarListaEmpleados(emp);
             }

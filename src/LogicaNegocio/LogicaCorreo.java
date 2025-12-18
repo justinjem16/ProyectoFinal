@@ -6,35 +6,28 @@ package LogicaNegocio;
 
 import Entidades.Correo;
 import Utilidades.Constantes;
-import javax.mail.*;
-import javax.mail.internet.*;
-import javax.activation.*;
-import javax.swing.JOptionPane;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.swing.JOptionPane;
 
 /**
- * Clase que gestiona el envío de correos electrónicos a través de un servidor SMTP.
- * Permite enviar correos con archivos adjuntos de forma síncrona o asíncrona.
- * Utiliza JavaMail API para la comunicación con el servidor de correo.
+ * Lógica para envío de correos electrónicos.
  * 
- * @author Justin
+ * @author Rachell Mora Reyes
  */
 public class LogicaCorreo {
-     /** Configuración del servidor SMTP */
+    
     private Properties propiedades = null;
-    
-    /** Sesión de correo con el servidor SMTP */
     private Session session = null;
-    
-    /** Lista de archivos adjuntos que se incluirán en el correo */
     private final ArrayList<BodyPart> adjuntos = new ArrayList<>();
     
     /**
-     * Carga las propiedades necesarias para conectarse al servidor SMTP.
-     * Configura el protocolo SSL, el host, el puerto y la autenticación.
-     * Los valores se obtienen de la clase Constantes.
+     * Carga las propiedades del servidor SMTP.
      */
     private void cargarPropiedades() {
         propiedades = new Properties();
@@ -46,9 +39,7 @@ public class LogicaCorreo {
     }
     
     /**
-     * Crea una nueva sesión SMTP con autenticación.
-     * Utiliza las credenciales configuradas en la clase Constantes para autenticarse.
-     * Debe llamarse antes de enviar cualquier correo.
+     * Crea la sesión SMTP.
      */
     private void crearSessionSmtp() {
         cargarPropiedades();
@@ -66,11 +57,7 @@ public class LogicaCorreo {
     }
     
     /**
-     * Agrega los archivos adjuntos del objeto Correo a la lista de adjuntos.
-     * Cada archivo se convierte en un BodyPart para ser incluido en el mensaje.
-     * 
-     * @param datosCorreo objeto que contiene la lista de archivos a adjuntar
-     * @throws MessagingException si ocurre un error al procesar los archivos adjuntos
+     * Agrega archivos adjuntos al correo.
      */
     private void agregarAdjuntos(Correo datosCorreo) throws MessagingException {
         for (File archivo : datosCorreo.getArchivosAdjuntos()) {
@@ -82,12 +69,7 @@ public class LogicaCorreo {
     }
     
     /**
-     * Envía un correo electrónico con la información proporcionada.
-     * El correo puede incluir archivos adjuntos si están especificados en el objeto datosCorreo.
-     * Este método es síncrono, por lo que bloquea la ejecución hasta que el correo sea enviado.
-     * 
-     * @param datosCorreo objeto que contiene el destinatario, asunto, mensaje y archivos adjuntos
-     * @throws MessagingException si ocurre un error durante el proceso de envío
+     * Envía un correo electrónico.
      */
     public void enviarCorreo(Correo datosCorreo) throws MessagingException {
         crearSessionSmtp();
@@ -116,11 +98,7 @@ public class LogicaCorreo {
     }
     
     /**
-     * Envía un correo electrónico en un hilo separado para no bloquear la interfaz.
-     * Muestra un mensaje al usuario indicando si el envío fue exitoso o si ocurrió un error.
-     * Esta es la forma recomendada de enviar correos desde la interfaz gráfica.
-     * 
-     * @param datosCorreo objeto que contiene la información del correo a enviar
+     * Envía correo en un hilo separado.
      */
     public void enviarCorreoThread(Correo datosCorreo) {
         Thread hilo = new Thread(() -> {

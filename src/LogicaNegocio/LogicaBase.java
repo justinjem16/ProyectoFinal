@@ -1,38 +1,21 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package LogicaNegocio;
-// Importa la clase encargada del acceso a datos (BD, archivos, etc.)
+
 import AccesoDatos.AccesoDatos;
 
 /**
- * Clase base abstracta para todas las clases de la capa
- * de lógica de negocio.
+ * Clase base abstracta para todas las lógicas de negocio.
  * 
- * Su objetivo es:
- * - Centralizar el acceso a la capa de datos
- * - Evitar duplicar código en las clases hijas
- * - Facilitar el mantenimiento y escalabilidad del sistema
+ * @author Rachell Mora Reyes
  */
-
-public class LogicaBase {
-  /**
-     * Objeto que permite la comunicación con la capa
-     * de acceso a datos.
-     * 
-     * Se declara como protected para que pueda ser
-     * utilizado directamente por las clases hijas.
-     */
+public abstract class LogicaBase {
+    
     protected AccesoDatos accesoDatos;
     
-    /**
-     * Constructor de la clase base.
-     * 
-     * Inicializa el objeto {@link AccesoDatos} para que
-     * todas las clases que hereden de {@code LogicaBase}
-     * tengan acceso inmediato a la capa de datos.
-     */
     public LogicaBase() {
-
-        // Crea una nueva instancia del acceso a datos
         this.accesoDatos = new AccesoDatos();
-    }  
+    }
 }
