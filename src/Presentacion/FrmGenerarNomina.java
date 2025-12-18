@@ -535,6 +535,27 @@ public class FrmGenerarNomina extends JFrame {
                 throw new Exception("No se encontró el empleado");
             }
             
+            // ===== NUEVA VALIDACIÓN: VERIFICAR FECHA DE INGRESO =====
+            if (empleadoSeleccionado.getFechaIngreso() != null) {
+                // Convertir la fecha del periodo a LocalDate
+                java.time.LocalDate fechaPeriodo = dateChooserPeriodo.getDate()
+                    .toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate();
+                
+                // Verificar si la fecha del periodo es anterior a la fecha de ingreso
+                if (fechaPeriodo.isBefore(empleadoSeleccionado.getFechaIngreso())) {
+                    JOptionPane.showMessageDialog(this,
+                        "No se puede generar nómina para una fecha anterior a la fecha de ingreso del empleado.\n\n" +
+                        "Fecha de ingreso: " + empleadoSeleccionado.getFechaIngresoFormateada() + "\n" +
+                        "Fecha del periodo seleccionado: " + fechaPeriodo.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        "Error: Fecha inválida",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            // ===== FIN DE NUEVA VALIDACIÓN =====
+            
             // Validar que el tipo de planilla coincida con el del empleado
             String tipoPlanillaSeleccionada = (String) cmbTipoPlanilla.getSelectedItem();
             if (!empleadoSeleccionado.getTipoPlanilla().equals(tipoPlanillaSeleccionada)) {
@@ -569,6 +590,7 @@ public class FrmGenerarNomina extends JFrame {
         }
     }
 
+
     /**
      * Maneja el evento de clic en el botón "Generar PDF Patrono".
      * 
@@ -581,31 +603,103 @@ public class FrmGenerarNomina extends JFrame {
      * @param evt el evento de acción generado al hacer clic en el botón
      */
     private void btnPDFPatronoActionPerformed(java.awt.event.ActionEvent evt) {
-        // Validar que exista una nómina calculada
-        if (nominaCalculada == null) {
+        // Validar que se haya seleccionado un periodo
+        if (dateChooserPeriodo.getDate() == null) {
             JOptionPane.showMessageDialog(this,
-                "Primero debe calcular la nómina",
+                "Por favor seleccione un periodo",
                 "Advertencia",
                 JOptionPane.WARNING_MESSAGE);
             return;
         }
         
         try {
-            // Generar el PDF para el patrono
-            String archivo = generadorPDF.generarReportePatrono(nominaCalculada);
+            // Obtener el periodo seleccionado
+            SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy");
+            String periodo = sdf.format(dateChooserPeriodo.getDate());
             
-            // Mostrar mensaje de éxito con la ruta del archivo
+            // Cargar TODOS los empleados del sistema
+            Empleado empleadoTemp = new Empleado();
+            logicaEmpleado.listarEmpleados(empleadoTemp);
+            
+            if (empleadoTemp.getListaEmpleados().isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "No hay empleados registrados en el sistema",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // Convertir la fecha del periodo a LocalDate para validación
+            java.time.LocalDate fechaPeriodo = dateChooserPeriodo.getDate()
+                .toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate();
+            
+            // Crear lista para almacenar todas las nóminas calculadas
+            java.util.List<Nomina> listaNominas = new java.util.ArrayList<>();
+            
+            // Variable para contar empleados procesados y excluidos
+            int empleadosProcesados = 0;
+            int empleadosExcluidos = 0;
+            
+            // Calcular la nómina de cada empleado
+            for (Empleado emp : empleadoTemp.getListaEmpleados()) {
+                // VALIDAR FECHA DE INGRESO: Solo incluir empleados que ya trabajaban en ese periodo
+                if (emp.getFechaIngreso() != null) {
+                    if (fechaPeriodo.isBefore(emp.getFechaIngreso())) {
+                        // Este empleado aún no había ingresado en este periodo, omitirlo
+                        empleadosExcluidos++;
+                        continue;
+                    }
+                }
+                
+                // Crear objeto nómina para este empleado
+                Nomina nomina = new Nomina(0, emp, periodo);
+                
+                // Calcular la nómina completa
+                calculadora.calcularNominaCompleta(nomina);
+                
+                // Agregar a la lista
+                listaNominas.add(nomina);
+                empleadosProcesados++;
+            }
+            
+            // Verificar que haya al menos un empleado para procesar
+            if (listaNominas.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "No hay empleados que hayan ingresado antes del periodo seleccionado.\n" +
+                    "Total de empleados excluidos: " + empleadosExcluidos,
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // Generar el PDF consolidado
+            String archivo = generadorPDF.generarReportePatronoMensual(listaNominas, periodo);
+            
+            // Construir mensaje informativo
+            String mensaje = "PDF patronal mensual generado exitosamente:\n" + archivo +
+                            "\n\nTotal de empleados procesados: " + empleadosProcesados;
+            
+            if (empleadosExcluidos > 0) {
+                mensaje += "\nEmpleados excluidos (no habían ingresado): " + empleadosExcluidos;
+            }
+            
+            // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this,
-                "PDF generado exitosamente:\n" + archivo,
+                mensaje,
                 "Éxito",
                 JOptionPane.INFORMATION_MESSAGE);
+                
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Error al generar PDF: " + e.getMessage(),
+                "Error al generar PDF patronal mensual: " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
+
 
     /**
      * Maneja el evento de clic en el botón "Generar PDF Empleado".

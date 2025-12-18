@@ -7,14 +7,18 @@ package Presentacion;
 import Entidades.Empleado;
 import LogicaNegocio.LogicaEmpleado;
 import Utilidades.Constantes;
+import com.toedter.calendar.JDateChooser; // NUEVO IMPORT
 import javax.swing.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * Formulario de interfaz gráfica para registrar nuevos empleados en el sistema de nómina.
  * 
  * <p>Esta ventana permite al usuario ingresar todos los datos necesarios de un empleado:
  * información personal (cédula, nombre, apellidos, contacto) e información laboral
- * (salario, tipo de planilla, puesto).
+ * (salario, tipo de planilla, puesto, fecha de ingreso).
  * 
  * <p>El formulario incluye validaciones básicas para garantizar que todos los campos
  * obligatorios sean completados antes de guardar el empleado en el sistema.
@@ -22,6 +26,7 @@ import javax.swing.*;
  * <h3>Funcionalidades principales:</h3>
  * <ul>
  *   <li>Captura de datos personales y laborales del empleado</li>
+ *   <li>Selección de fecha de ingreso mediante calendario (JDateChooser)</li>
  *   <li>Selección del tipo de planilla (quincenal o mensual)</li>
  *   <li>Validación de campos obligatorios</li>
  *   <li>Integración con la lógica de negocio para persistir los datos</li>
@@ -85,6 +90,7 @@ public class FrmEmpleado extends javax.swing.JFrame {
      * 
      * <p>Este método inicializa el combo box de tipo de planilla con las opciones
      * disponibles definidas en la clase de constantes (QUINCENAL y MENSUAL).
+     * También configura el selector de fecha con la fecha actual.
      */
     private void configurarFormulario() {
         // Crear array con los tipos de planilla disponibles
@@ -94,6 +100,9 @@ public class FrmEmpleado extends javax.swing.JFrame {
         };
         // Asignar las opciones al combo box
         cmbTipoPlanilla.setModel(new DefaultComboBoxModel<>(tiposPlanilla));
+        
+        // NUEVO: Configurar el selector de fecha con la fecha actual
+        dateChooserFechaIngreso.setDate(new Date());
     }
     
     // ========================================================================
@@ -123,6 +132,7 @@ public class FrmEmpleado extends javax.swing.JFrame {
         lblSalario = new javax.swing.JLabel();
         lblPlanilla = new javax.swing.JLabel();
         lblPuesto = new javax.swing.JLabel();
+        lblFechaIngreso = new javax.swing.JLabel(); // NUEVO LABEL
         
         // Inicialización de campos de texto
         txtCedula = new javax.swing.JTextField();
@@ -134,8 +144,9 @@ public class FrmEmpleado extends javax.swing.JFrame {
         txtSalario = new javax.swing.JTextField();
         txtPuesto = new javax.swing.JTextField();
         
-        // Inicialización del combo box
+        // Inicialización del combo box y date chooser
         cmbTipoPlanilla = new javax.swing.JComboBox<>();
+        dateChooserFechaIngreso = new JDateChooser(); // NUEVO COMPONENTE
         
         // Inicialización de botones
         btnGuardar = new javax.swing.JButton();
@@ -156,6 +167,7 @@ public class FrmEmpleado extends javax.swing.JFrame {
         lblSalario.setText("Salario Bruto:");
         lblPlanilla.setText("Tipo Planilla:");
         lblPuesto.setText("Puesto:");
+        lblFechaIngreso.setText("Fecha de Ingreso:"); // NUEVO TEXTO
 
         // Configuración de botones con sus eventos
         btnGuardar.setText("Guardar");
@@ -180,7 +192,8 @@ public class FrmEmpleado extends javax.swing.JFrame {
                     .addComponent(lblTelefono)
                     .addComponent(lblSalario)
                     .addComponent(lblPlanilla)
-                    .addComponent(lblPuesto))
+                    .addComponent(lblPuesto)
+                    .addComponent(lblFechaIngreso)) // NUEVO COMPONENTE EN LAYOUT
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtCedula)
@@ -190,15 +203,16 @@ public class FrmEmpleado extends javax.swing.JFrame {
                     .addComponent(txtEmail)
                     .addComponent(txtTelefono)
                     .addComponent(txtSalario)
-                    .addComponent(cmbTipoPlanilla, 0, 300, Short.MAX_VALUE)
-                    .addComponent(txtPuesto))
+                    .addComponent(cmbTipoPlanilla, 0, 250, Short.MAX_VALUE)
+                    .addComponent(txtPuesto)
+                    .addComponent(dateChooserFechaIngreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)) // NUEVO COMPONENTE
                 .addContainerGap(30, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(150, 150, 150)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnGuardar)
                 .addGap(18, 18, 18)
-                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnCancelar)
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,39 +221,44 @@ public class FrmEmpleado extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCedula)
                     .addComponent(txtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNombre)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblApellido1)
                     .addComponent(txtApellido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblApellido2)
                     .addComponent(txtApellido2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblEmail)
                     .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTelefono)
                     .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSalario)
                     .addComponent(txtSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPlanilla)
                     .addComponent(cmbTipoPlanilla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPuesto)
                     .addComponent(txtPuesto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
+                .addGap(10, 10, 10)
+                // NUEVO GRUPO PARA FECHA DE INGRESO
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFechaIngreso)
+                    .addComponent(dateChooserFechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
                     .addComponent(btnCancelar))
@@ -278,6 +297,15 @@ public class FrmEmpleado extends javax.swing.JFrame {
                 return; // Si la validación falla, no continuar
             }
             
+            // NUEVO: Convertir la fecha del JDateChooser a LocalDate
+            LocalDate fechaIngreso = null;
+            if (dateChooserFechaIngreso.getDate() != null) {
+                fechaIngreso = dateChooserFechaIngreso.getDate()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            }
+            
             // Crear objeto Empleado con los datos del formulario
             // El ID se inicializa en 0 porque será generado automáticamente
             Empleado empleado = new Empleado(
@@ -290,7 +318,8 @@ public class FrmEmpleado extends javax.swing.JFrame {
                 txtTelefono.getText().trim(),
                 Double.parseDouble(txtSalario.getText().trim()),
                 (String) cmbTipoPlanilla.getSelectedItem(),
-                txtPuesto.getText().trim()
+                txtPuesto.getText().trim(),
+                fechaIngreso // NUEVO PARÁMETRO
             );
             
             // Guardar el empleado a través de la lógica de negocio
@@ -344,6 +373,7 @@ public class FrmEmpleado extends javax.swing.JFrame {
      *   <li>Email</li>
      *   <li>Salario</li>
      *   <li>Puesto</li>
+     *   <li>Fecha de Ingreso</li>
      * </ul>
      * 
      * <p>Nota: El segundo apellido y el teléfono son opcionales.
@@ -358,7 +388,8 @@ public class FrmEmpleado extends javax.swing.JFrame {
             txtApellido1.getText().trim().isEmpty() ||
             txtEmail.getText().trim().isEmpty() ||
             txtSalario.getText().trim().isEmpty() ||
-            txtPuesto.getText().trim().isEmpty()) {
+            txtPuesto.getText().trim().isEmpty() ||
+            dateChooserFechaIngreso.getDate() == null) { // NUEVA VALIDACIÓN
             
             // Mostrar mensaje de advertencia al usuario
             JOptionPane.showMessageDialog(this,
@@ -382,6 +413,9 @@ public class FrmEmpleado extends javax.swing.JFrame {
     
     /** Combo box para seleccionar el tipo de planilla (quincenal o mensual) */
     private javax.swing.JComboBox<String> cmbTipoPlanilla;
+    
+    /** Selector de fecha para la fecha de ingreso del empleado - NUEVO */
+    private JDateChooser dateChooserFechaIngreso;
     
     /** Etiqueta descriptiva para el campo de cédula */
     private javax.swing.JLabel lblCedula;
@@ -409,6 +443,9 @@ public class FrmEmpleado extends javax.swing.JFrame {
     
     /** Etiqueta descriptiva para el campo de puesto */
     private javax.swing.JLabel lblPuesto;
+    
+    /** Etiqueta descriptiva para el campo de fecha de ingreso - NUEVA */
+    private javax.swing.JLabel lblFechaIngreso;
     
     /** Campo de texto para ingresar el primer apellido del empleado */
     private javax.swing.JTextField txtApellido1;
