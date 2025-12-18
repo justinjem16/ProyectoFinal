@@ -1,476 +1,284 @@
-# ProyectoFinal
-
-
-
-\# Sistema de Cálculo de Nómina - Costa Rica
-
-
-
+ProyectoFinal
+Sistema de Cálculo de Nómina - Costa Rica
 Sistema de gestión y cálculo automatizado de nóminas desarrollado en Java, siguiendo la legislación laboral costarricense. Diseñado para departamentos de Recursos Humanos.
+Contenido
+
+Características
+Requisitos
+Instalación
+Cómo Usar
+Novedades Versión 3.0
+Configuración
+Solución de Problemas
+
+Características
+Funcionalidades Principales
+El sistema incluye todo lo necesario para gestionar la nómina de una empresa:
+
+Gestión de Empleados: Registra, edita y elimina información de empleados
+Fecha de Ingreso: Ahora puedes registrar cuándo empezó a trabajar cada empleado (NUEVO)
+Cálculo Automático: El sistema calcula todas las deducciones y aportes según la ley costarricense
+Validación Inteligente: No te deja generar nóminas para fechas anteriores al ingreso del empleado (NUEVO)
+Reportes PDF:
+
+Comprobantes individuales para cada empleado
+Reportes patronales individuales
+Reporte consolidado de toda la planilla en un solo documento (NUEVO)
+
 
+Envío de Correos: Envía los comprobantes automáticamente por email
+Login Seguro: Sistema de autenticación para controlar el acceso
 
+Cálculos que Realiza
+El sistema calcula automáticamente:
+Deducciones del empleado:
 
-\## Tabla de Contenidos
+CCSS - IVM: 4.17%
+CCSS - SEM: 6.50%
+Banco Popular: 1%
+Impuesto sobre la Renta según tramos progresivos
 
+Aportes patronales:
 
+CCSS - IVM: 7.08%
+CCSS - SEM: 10.59%
+INA: 1.5%
+Fondo de Capitalización Laboral: 3%
+Asignaciones Familiares: 5%
 
-\- \[Características](#-características)
+Impuesto sobre la Renta
+El impuesto se calcula por tramos según la legislación vigente:
 
-\- \[Requisitos del Sistema](#-requisitos-del-sistema)
+De ₡0 a ₡941,000: Exento (0%)
+De ₡941,001 a ₡1,405,000: 10%
+De ₡1,405,001 a ₡2,108,000: 15%
+De ₡2,108,001 a ₡4,215,000: 20%
+Más de ₡4,215,000: 25%
 
-\- \[Instalación](#-instalación)
+Requisitos
+Para usar el sistema necesitas:
 
-\- \[Uso del Sistema](#-uso-del-sistema)
+Java JDK 8 o superior - El lenguaje en que está desarrollado
+NetBeans IDE - Recomendamos la versión 12 o superior, aunque funciona con cualquier IDE Java
+Apache Ant - Ya viene incluido con NetBeans
 
-\- \[Estructura del Proyecto](#-estructura-del-proyecto)
+Librerías Incluidas
+El proyecto ya incluye todas las librerías necesarias en la carpeta lib/:
 
-\- \[Configuración](#-configuración)
+itextpdf-5.5.13.jar para generar PDFs
+mail.jar para enviar correos
+activation.jar requerido por JavaMail
+jcalendar-1.4.jar para el selector de fechas
 
-\- \[Cálculos de Nómina](#-cálculos-de-nómina)
+Instalación
+Paso 1: Descargar y Extraer
+Descarga el archivo ZIP del proyecto y extráelo donde quieras tenerlo.
+Paso 2: Abrir en NetBeans
+
+Abre NetBeans
+Ve a File → Open Project
+Busca la carpeta del proyecto
+Ábrela
 
-\- \[Guía de Edición](#-guía-de-edición)
-
-\- \[Solución de Problemas](#-solución-de-problemas)
-
-\- \[Contribuciones](#-contribuciones)
-
-\- \[Licencia](#-licencia)
-
-
-
-\## Características
-
-
-
-\### Funcionalidades Principales
-
-
-
-\- \*\*Gestión de Empleados\*\*: CRUD completo de información de empleados
-
-\- \*\*Cálculo Automático de Nómina\*\*: Deducciones y aportes según ley costarricense
-
-\- \*\*Generación de Reportes PDF\*\*: Comprobantes para empleados y reportes patronales
-
-\- \*\*Envío de Correos\*\*: Envío automático de comprobantes por email
-
-\- \*\*Sistema de Autenticación\*\*: Login de usuarios con validación
-
-\- \*\*Persistencia en Archivos\*\*: Almacenamiento en archivos de texto
-
-
-
-\### Cálculos Implementados
-
-
-
-\*\*Deducciones del Empleado:\*\*
-
-\- CCSS - IVM: 4.17%
-
-\- CCSS - SEM: 6.50%
-
-\- Banco Popular: 1%
-
-\- Impuesto sobre la Renta (por tramos)
-
-
-
-\*\*Aportes Patronales:\*\*
-
-\- CCSS - IVM: 7.08%
-
-\- CCSS - SEM: 10.59%
-
-\- INA: 1.5%
-
-\- Fondo de Capitalización Laboral: 3%
-
-\- Asignaciones Familiares: 5%
-
-
-
-\## Requisitos del Sistema
-
-
-
-\### Software Necesario
-
-
-
-\- \*\*Java JDK\*\*: Versión 8 o superior
-
-\- \*\*NetBeans IDE\*\*: Versión 12 o superior (recomendado) o cualquier IDE Java
-
-\- \*\*Apache Ant\*\*: Incluido en NetBeans (para compilar y construir el proyecto)
-
-\- \*\*Librerías Externas\*\*: Las 4 librerías JAR necesarias están incluidas en el proyecto:
-
-&nbsp; - `itextpdf-5.5.13.jar` - Para generación de PDFs
-
-&nbsp; - `mail.jar` - Para envío de correos electrónicos
-
-&nbsp; - `activation.jar` - Requerido por JavaMail
-
-&nbsp; - `jcalendar-1.4.jar` - Para el selector de fechas (DateChooser)
-
-
-
-\## Instalación
-
-
-
-\### Paso 1: Descargar el Proyecto
-
-
-
-1\. Descarga el archivo ZIP del proyecto
-
-2\. Extrae el contenido en la ubicación deseada
-
-
-
-\### Paso 2: Abrir el Proyecto en NetBeans
-
-
-
-1\. Abre NetBeans IDE
-
-2\. Ve a \*\*File → Open Project\*\*
-
-3\. Navega hasta la carpeta donde extrajiste el proyecto
-
-4\. Selecciona la carpeta del proyecto
-
-5\. Click en \*\*Open Project\*\*
-
-
-
-\### Paso 3: Verificar las Librerías
-
-
-
-Las librerías ya están incluidas en el proyecto dentro de la carpeta `lib/`. 
-
-
-
-Para verificar que estén correctamente configuradas:
-
-
-
-1\. Click derecho en el proyecto → \*\*Properties\*\*
-
-2\. Ve a \*\*Libraries\*\* en el panel izquierdo
-
-3\. En la pestaña \*\*Compile\*\*, verifica que aparezcan las 4 librerías:
-
-&nbsp;  - `itextpdf-5.5.13.jar`
-
-&nbsp;  - `mail.jar`
-
-&nbsp;  - `activation.jar`
-
-&nbsp;  - `jcalendar-1.4.jar`
-
-4\. Si alguna no aparece, click en \*\*Add JAR/Folder\*\* y agrégala desde la carpeta `lib/`
-
-5\. Click en \*\*OK\*\*
-
-
-
-\### Paso 4: Limpiar y Construir el Proyecto
-
-
-
-1\. Click derecho en el proyecto
-
-2\. Selecciona \*\*Clean and Build\*\* (o presiona Shift + F11)
-
-3\. Verifica que no haya errores de compilación
-
-4\. Si todo está bien, verás: \*\*BUILD SUCCESSFUL\*\*
-
-
-
-\### Paso 5: Ejecutar el Proyecto
-
-
-
-1\. Presiona \*\*F6\*\* o click derecho en el proyecto → \*\*Run\*\*
-
-2\. Se abrirá la ventana de Login
-
-3\. Ingresa las credenciales:
-
-&nbsp;  - Usuario: `rrhh`
-
-&nbsp;  - Contraseña: `nominas123`
-
-4\. ¡Listo! Ya puedes usar el sistema
-
-
-
-\## Uso del Sistema
-
-
-
-\### Iniciar el Sistema
-
-
-
-1\. \*\*Compilar el Proyecto\*\* (si aún no lo has hecho):
-
-&nbsp;  - En NetBeans: Click derecho en el proyecto → \*\*Clean and Build\*\*
-
-&nbsp;  - O presiona `Shift + F11`
-
-
-
-2\. \*\*Ejecutar el Proyecto\*\*:
-
-&nbsp;  - En NetBeans: Click derecho en el proyecto → \*\*Run\*\*
-
-&nbsp;  - O presiona `F6`
-
-&nbsp;  - Clase principal: `Presentacion.FrmLogin`
-
-
-
-3\. \*\*Iniciar Sesión\*\*:
-
-&nbsp;  - Usuario: `rrhh`
-
-&nbsp;  - Contraseña: `nominass123`
-
-
-
-\### Flujo de Trabajo Típico
-
-
-
-\#### 1. Gestionar Empleados
-
-
-
-```
-
-Login → Menú Principal → Gestión de Empleados
-
-```
-
-
-
-\*\*Agregar Empleado:\*\*
-
-\- Click en "Agregar Empleado"
-
-\- Completa los campos obligatorios:
-
-&nbsp; - Cédula (formato: X-XXXX-XXXX)
-
-&nbsp; - Nombre y apellidos
-
-&nbsp; - Email
-
-&nbsp; - Teléfono
-
-&nbsp; - Salario bruto
-
-&nbsp; - Tipo de planilla (Quincenal/Mensual)
-
-&nbsp; - Puesto
-
-\- Click en "Guardar"
-
-
-
-\*\*Actualizar Tabla:\*\*
-
-\- Click en "Actualizar" para refrescar la lista
-
-
-
-\#### 2. Generar Nómina
-
-
-
-```
-
-Login → Menú Principal → Generar Nómina
-
-```
-
-
-
-\*\*Proceso:\*\*
-
-1\. Selecciona un empleado de la lista
-
-2\. \*\*Selecciona el tipo de planilla\*\* (Quincenal/Mensual)
-
-&nbsp;  - Debe coincidir con el tipo de planilla del empleado
-
-3\. \*\*Selecciona la fecha del período\*\* usando el DateChooser
-
-&nbsp;  - Para \*\*planilla quincenal\*\*:
-
-&nbsp;    - Fechas del 1 al 15 → Genera período Q1 (Primera quincena)
-
-&nbsp;    - Fechas del 16 al fin de mes → Genera período Q2 (Segunda quincena)
-
-&nbsp;    - Ejemplo: Si seleccionas 10/12/2024 → Período: `2024-12-Q1`
-
-&nbsp;  - Para \*\*planilla mensual\*\*:
-
-&nbsp;    - Cualquier día del mes genera el período mensual
-
-&nbsp;    - Ejemplo: Si seleccionas 15/12/2024 → Período: `2024-12-M`
-
-4\. Click en "Calcular Nómina"
-
-5\. El sistema calculará automáticamente:
-
-&nbsp;  - Deducciones CCSS
-
-&nbsp;  - Banco Popular
-
-&nbsp;  - Impuesto sobre la Renta
-
-&nbsp;  - Aportes patronales
-
-5\. Se generarán 2 PDFs con nombres que incluyen el período:
-
-&nbsp;  - `Nomina\_\[cedula]\_\[periodo].pdf` - Para el empleado
-
-&nbsp;    - Ejemplo: `Nomina\_1-2345-6789\_2024-12-Q1.pdf`
-
-&nbsp;  - `Patronal\_\[cedula]\_\[periodo].pdf` - Para la empresa
-
-&nbsp;    - Ejemplo: `Patronal\_1-2345-6789\_2024-12-M.pdf`
-
-
-
-\*\*Enviar por Correo (Opcional):\*\*
-
-\- Click en "Enviar por Correo"
-
-\- Los PDFs se adjuntarán automáticamente al email del empleado
-
-
-
-\## Estructura del Proyecto
-
-
-
-```
-
-SistemaNomina/
-
-│
-
-├── src/
-
-│   ├── AccesoDatos/
-
-│   │   ├── AccesoDatos.java      # Manejo de archivos
-
-│   │   └── IdControl.java        # Control de IDs
-
-│   │
-
-│   ├── Entidades/
-
-│   │   ├── Empleado.java         # Modelo de empleado
-
-│   │   ├── Nomina.java           # Modelo de nómina
-
-│   │   ├── Usuario.java          # Modelo de usuario
-
-│   │   └── Correo.java           # Modelo de correo
-
-│   │
-
-│   ├── LogicaNegocio/
-
-│   │   ├── LogicaBase.java       # Clase base abstracta
-
-│   │   ├── LogicaEmpleado.java   # Lógica de empleados
-
-│   │   ├── LogicaUsuario.java    # Lógica de usuarios
-
-│   │   ├── LogicaCorreo.java     # Lógica de correos
-
-│   │   ├── CalculadoraNomina.java # Cálculos de nómina
-
-│   │   └── GeneradorPDF.java     # Generación de PDFs
-
-│   │
-
-│   ├── Presentacion/
-
-│   │   ├── FrmLogin.java         # Ventana de login
-
-│   │   ├── FrmMenuPrincipal.java # Menú principal
-
-│   │   ├── FrmGestionEmpleados.java # Gestión de empleados
-
-│   │   ├── FrmEmpleado.java      # Formulario de empleado
-
-│   │   └── FrmGenerarNomina.java # Generación de nómina
-
-│   │
-
-│   └── Utilidades/
-
-│       ├── Constantes.java       # Constantes del sistema
-
-│       └── NombresArchivos.java  # Enum de archivos
-
-│
-
-├── lib/                          # Librerías externas (incluidas)
-
-│   ├── itextpdf-5.5.13.jar      # Generación de PDFs
-
-│   ├── mail.jar                 # Envío de correos
-
-│   ├── activation.jar           # Requerido por JavaMail
-
-│   └── jcalendar-1.4.jar        # Selector de fechas
-
-│
-
-├── build/                        # Carpeta de compilación (generada por Ant)
-
-├── dist/                         # Carpeta de distribución (generada por Ant)
-
-├── nbproject/                    # Configuración de NetBeans
-
-├── build.xml                     # Script de construcción Ant
-
-├── manifest.mf                   # Archivo manifest
-
-│
-
-├── empleados.txt                 # Base de datos de empleados (incluida)
-
-├── usuarios.txt                  # Base de datos de usuarios (incluida)
-
-├── idControl.txt                 # Control de IDs (incluido)
-
-└── README.md                     # Este archivo
-
-```
-
-
-
----
-
-
-
-\*\*Desarrollado por:\*\* Rachell Mora, Alejandro Moran, Justin Espinoza  
-
-\*\*Curso:\*\* Programación II 
-
-\*\*Fecha:\*\* Diciembre 2025
-
+Paso 3: Verificar Librerías
+Las librerías deberían estar ya configuradas. Para verificar:
+
+Click derecho en el proyecto → Properties
+Ve a Libraries
+En la pestaña Compile, deben aparecer las 4 librerías mencionadas arriba
+Si falta alguna, agrégala con Add JAR/Folder desde la carpeta lib/
+
+Paso 4: Ejecutar
+
+Presiona F6 o click derecho → Run
+Se abrirá la ventana de login
+Usa las credenciales de prueba:
+
+Usuario: rrhh
+Contraseña: nominas123
+
+
+Cómo Usar
+Gestionar Empleados
+Desde el menú principal selecciona "Gestión de Empleados".
+Para agregar un empleado nuevo:
+
+Click en "Agregar Empleado"
+Llena todos los campos obligatorios
+Selecciona la fecha de ingreso en el calendario (NUEVO)
+Guarda
+
+Los campos obligatorios son: cédula, nombre, primer apellido, email, salario, tipo de planilla, puesto y fecha de ingreso.
+Generar Nómina Individual
+Desde el menú principal selecciona "Generar Nómina".
+Proceso:
+
+Selecciona un empleado de la lista
+Elige el tipo de planilla (debe coincidir con el del empleado)
+Selecciona la fecha del período
+Click en "Calcular Nómina"
+
+El sistema calculará todo automáticamente y te mostrará el desglose completo.
+Nota importante: Si intentas generar una nómina para una fecha anterior a cuando el empleado ingresó, el sistema te lo impedirá y te mostrará un mensaje explicando el problema.
+Para planilla quincenal:
+
+Si seleccionas del 1 al 15: genera la primera quincena
+Si seleccionas del 16 al fin de mes: genera la segunda quincena
+
+Para planilla mensual:
+
+Cualquier día del mes genera el período mensual completo
+
+Después de calcular puedes:
+
+Generar el PDF para el empleado
+Enviar el comprobante por correo
+Ver el detalle completo de deducciones y aportes
+
+Generar Reporte Consolidado (NUEVO)
+Esta es la función más útil de la nueva versión. Te permite ver toda la planilla en un solo PDF.
+Cómo funciona:
+
+Ve a "Generar Nómina"
+NO selecciones ningún empleado
+Solo selecciona el período que quieres consultar
+Click en "Generar PDF Patrono"
+
+El sistema automáticamente:
+
+Carga todos tus empleados
+Calcula la nómina de cada uno
+Excluye a los que no habían ingresado todavía en ese período
+Te genera un PDF con toda la información consolidada
+
+Qué incluye el reporte:
+El PDF muestra una tabla con todos los empleados y sus datos:
+
+Nombre completo
+Salario bruto
+Total de CCSS
+INA
+FCL
+Asignaciones
+Total por empleado
+
+Al final incluye totales generales de todo, incluyendo el monto total que debes pagar ese mes.
+El archivo se guarda como: Patronal_Mensual_[mes]_[año].pdf
+Novedades Versión 3.0
+Esta versión incluye tres mejoras que surgieron de usar el sistema en situaciones reales:
+1. Campo de Fecha de Ingreso
+Ahora puedes registrar cuándo cada empleado empezó a trabajar. Esto te sirve para:
+
+Llevar control de antigüedad
+Validar que las nóminas sean correctas
+Tener la información completa del empleado
+
+Cómo funciona:
+
+Al registrar un empleado nuevo, seleccionas la fecha en un calendario
+Si editas un empleado antiguo, puedes agregarle la fecha
+Los empleados sin fecha siguen funcionando normal (para no romper nada)
+
+2. Validación Automática de Fechas
+El sistema ahora te avisa si intentas generar una nómina para una fecha anterior a cuando el empleado ingresó. Esto evita errores y mantiene todo consistente.
+Si intentas hacerlo, te muestra un mensaje claro con ambas fechas para que veas cuál es el problema.
+3. Reporte Patronal Consolidado
+Esta fue probablemente la mejora más pedida. Antes tenías que generar un PDF por cada empleado y luego sumar todo manualmente. Ahora puedes generar un solo PDF con toda la planilla.
+Ventajas:
+
+Ves todo en un solo documento
+No tienes que sumar nada manualmente
+El total ya viene calculado
+Es más fácil de archivar y presentar
+Te dice cuántos empleados se procesaron
+
+Sobre la exclusión automática:
+Si generas un reporte de, por ejemplo, marzo 2024, el sistema automáticamente excluye a los empleados que ingresaron después de marzo. Esto te asegura que los cálculos sean correctos y no incluyas gente que no trabajaba todavía en ese período.
+Diferencias entre Versión 2.0 y 3.0
+Versión 2.0: Solo podías hacer reportes individuales, no había control de fechas de ingreso, y tenías que sumar todo manualmente.
+Versión 3.0: Registras fecha de ingreso, el sistema valida las fechas automáticamente, y puedes generar reportes consolidados de toda la planilla con un solo click.
+Configuración
+Correo Electrónico
+Para que funcione el envío de correos, necesitas configurar tu servidor SMTP en el archivo Constantes.java que está en src/Utilidades/.
+Busca las líneas que dicen:
+
+SMTP_HOST
+SMTP_PORT
+EMAIL_FROM
+EMAIL_PASSWORD
+
+Y cámbialas por los datos de tu servidor de correo.
+Importante: Por seguridad, en un ambiente real deberías usar variables de entorno en lugar de poner las contraseñas directamente en el código.
+Archivos de Datos
+El sistema guarda toda la información en archivos de texto:
+empleados.txt contiene los datos de cada empleado separados por comas. Ahora incluye la fecha de ingreso al final.
+usuarios.txt contiene los usuarios que pueden acceder al sistema.
+idControl.txt mantiene el control de los IDs para que no se repitan.
+Modificar Porcentajes
+Si cambia la legislación o necesitas ajustar algún porcentaje, todo está centralizado en el archivo Constantes.java dentro de src/Utilidades/.
+Ahí puedes cambiar:
+
+Los porcentajes de deducciones
+Los porcentajes de aportes patronales
+Los tramos del impuesto sobre la renta
+
+Solución de Problemas
+No encuentra la clase principal
+Ve a las propiedades del proyecto, sección Run, y asegúrate que Main Class diga: Presentacion.FrmLogin
+Error con las librerías
+Si te da error de que no encuentra iText o JavaMail:
+
+Verifica que las librerías estén en la carpeta lib/
+Ve a propiedades del proyecto → Libraries
+Agrega las que falten con "Add JAR/Folder"
+
+No se genera el PDF
+Puede ser por permisos. Verifica que tienes permisos de escritura en la carpeta del proyecto. También revisa la consola de NetBeans para ver el error específico.
+Problemas con el correo
+Revisa que la configuración del SMTP esté correcta en Constantes.java. Asegúrate que el puerto 465 esté disponible y que el usuario y contraseña del correo sean correctos.
+No aparece el calendario
+Si no te aparece el selector de fecha:
+
+Verifica que jcalendar-1.4.jar esté en lib/
+Agrégalo en las propiedades del proyecto si no está
+Haz Clean and Build
+
+La validación de fecha no funciona
+Si no te valida las fechas, verifica que:
+
+El empleado tenga fecha de ingreso registrada
+Los empleados sin fecha no tienen validación (esto es normal)
+Hayas actualizado correctamente los archivos modificados
+
+El reporte consolidado no incluye a todos
+Esto es normal. El sistema excluye automáticamente a los empleados que ingresaron después del período que seleccionaste. Fíjate en el mensaje que te dice cuántos fueron excluidos y por qué.
+Los empleados sin fecha de ingreso siempre se incluyen para mantener compatibilidad.
+
+Estructura del Proyecto
+El proyecto está organizado en paquetes:
+AccesoDatos: Manejo de archivos y control de IDs
+Entidades: Modelos de datos (Empleado, Nomina, Usuario, Correo)
+LogicaNegocio: Toda la lógica del sistema (cálculos, generación de PDFs, envío de correos)
+Presentacion: Las ventanas del sistema (Login, Menú, Gestión de Empleados, Generación de Nómina)
+Utilidades: Constantes del sistema y nombres de archivos
+La carpeta lib/ contiene las librerías externas necesarias.
+
+Recursos
+Si necesitas más información sobre las librerías:
+
+Documentación de iText PDF: itextpdf.com
+JavaMail API: javaee.github.io/javamail
+JCalendar: toedter.com/jcalendar
+Legislación Laboral de Costa Rica: mtss.go.cr
+
+
+Versión: 3.0
+Última actualización: Diciembre 18 2024
+Desarrollado por: Rachell Mora, Alejandro Moran, Justin Espinoza
+Curso: Programación II
+
+Historial
+Versión 3.0 - Diciembre 18 2024
+Agregamos tres cosas importantes: el campo de fecha de ingreso con un calendario visual, validación automática para que no puedas generar nóminas de fechas incorrectas, y el reporte consolidado que muestra toda la planilla en un solo PDF.
+Versión 2.0 - Diciembre 16 2024
+Primera versión funcional del sistema con gestión de empleados, cálculo de nóminas, generación de PDFs y envío de correos.
