@@ -4,29 +4,74 @@
  */
 package AccesoDatos;
 
-import Utilidades.NombresArchivos;
 import java.io.*;
+import java.util.*;
+import Utilidades.NombresArchivos;
+
+// ================================================================================
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+// CLASE IdControl
+// ================================================================================
+
 /**
- *Clase que gestiona la generación y control de IDs únicos para diferentes archivos del sistema.
- * Mantiene un registro persistente de los últimos IDs generados para cada tipo de archivo,
- * asegurando que no se repitan identificadores.
+ * Control de IDs autoincrementables por archivo.
+ * <p>Esta clase gestiona la generación automática de identificadores únicos
+ * para diferentes archivos, manteniendo un registro persistente de los últimos
+ * IDs utilizados.</p>
  * 
- * @author Justin
+ * <p><b>Estado inicial del objeto:</b></p>
+ * <ul>
+ *   <li>archivoControl: Nombre del archivo de control obtenido de NombresArchivos.ID_CONTROL</li>
+ *   <li>idMap: HashMap vacío, listo para cargar los IDs desde el archivo</li>
+ * </ul>
+ * 
+ * <p><b>Uso típico:</b> Después de crear la instancia, se debe llamar al método
+ * {@link #getNextId(String)} para obtener el siguiente ID disponible para un archivo específico.</p>
+ * 
+ * @author Justin Espinoza
  */
 public class IdControl {
-    /** Ruta del archivo donde se almacenan los IDs */
+    
+    // ================================================================================
+    // ATRIBUTOS
+    // ================================================================================
+    
+    /**
+     * Ruta del archivo que almacena el control de IDs.
+     */
     private String archivoControl;
     
-    /** Mapa que asocia cada nombre de archivo con su último ID generado */
-    private Map<String, Integer> idMap;
-
     /**
-     * Crea una nueva instancia de IdControl.
-     * Inicializa el archivo de control y carga los IDs existentes.
-     * Si el archivo no existe, lo crea automáticamente.
+     * Mapa que asocia nombres de archivo con su último ID utilizado.
+     */
+    private Map<String, Integer> idMap;
+    
+    // ================================================================================
+    // CONSTRUCTOR
+    // ================================================================================
+    
+    /**
+     * Crea una nueva instancia de IdControl con configuración inicial.
+     * 
+     * <p>Inicializa el archivo de control y carga los IDs existentes desde el archivo.</p>
+     * 
+     * <p><b>Estado inicial del objeto:</b></p>
+     * <ul>
+     *   <li>archivoControl: Nombre del archivo obtenido de NombresArchivos.ID_CONTROL</li>
+     *   <li>idMap: HashMap con los IDs cargados desde el archivo, o vacío si el archivo no existe</li>
+     * </ul>
+     * 
+     * <p><b>Uso típico:</b> Después de crear la instancia, utilizar {@link #getNextId(String)}
+     * para obtener IDs autoincrementables.</p>
      * 
      * @throws IOException si ocurre un error al leer o crear el archivo de control
      */
@@ -35,11 +80,16 @@ public class IdControl {
         this.idMap = new HashMap<>();
         loadIds();
     }
-
+    
+    // ================================================================================
+    // MÉTODOS PRIVADOS
+    // ================================================================================
+    
     /**
-     * Carga los IDs desde el archivo de control hacia el mapa en memoria.
-     * Si el archivo no existe, lo crea vacío y retorna sin cargar datos.
-     * Cada línea del archivo debe tener el formato: nombreArchivo=id
+     * Carga los IDs desde el archivo de control.
+     * 
+     * <p>Lee el archivo línea por línea y parsea los pares nombreArchivo=id
+     * para poblar el mapa de IDs. Si el archivo no existe, lo crea vacío.</p>
      * 
      * @throws IOException si ocurre un error al leer el archivo
      */
@@ -59,11 +109,12 @@ public class IdControl {
             }
         }
     }
-
+    
     /**
-     * Guarda todos los IDs del mapa en el archivo de control.
-     * Cada entrada se guarda en una línea con el formato: nombreArchivo=id
-     * Sobrescribe completamente el contenido anterior del archivo.
+     * Guarda los IDs actuales en el archivo de control.
+     * 
+     * <p>Escribe todos los pares nombreArchivo=id del mapa en el archivo,
+     * sobrescribiendo el contenido anterior.</p>
      * 
      * @throws IOException si ocurre un error al escribir en el archivo
      */
@@ -75,16 +126,25 @@ public class IdControl {
             }
         }
     }
-
+    
+    // ================================================================================
+    // MÉTODOS PÚBLICOS
+    // ================================================================================
+    
     /**
      * Obtiene el siguiente ID disponible para un archivo específico.
-     * El método es sincronizado para evitar conflictos en accesos concurrentes.
-     * Si es la primera vez que se solicita un ID para ese archivo, retorna 1.
-     * Después de obtener el ID, automáticamente incrementa el contador y guarda los cambios.
      * 
-     * @param fileName nombre del archivo para el cual se solicita el ID
-     * @return el siguiente ID disponible para ese archivo
-     * @throws IOException si ocurre un error al leer o guardar el archivo de control
+     * <p>Este método es sincronizado para garantizar la generación de IDs únicos
+     * en entornos multihilo. Recarga los IDs desde el archivo, obtiene el siguiente
+     * ID disponible (comenzando en 1 si es la primera vez), incrementa el contador
+     * y guarda los cambios.</p>
+     * 
+     * @param fileName el nombre del archivo para el cual se requiere un nuevo ID
+     * @return el siguiente ID disponible para el archivo especificado
+     * @throws IOException si ocurre un error al leer o escribir el archivo de control
+     * 
+     * @see #loadIds()
+     * @see #saveIds()
      */
     public synchronized int getNextId(String fileName) throws IOException {
         this.archivoControl = NombresArchivos.ID_CONTROL.getNombreArchivo();
