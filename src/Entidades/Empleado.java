@@ -526,7 +526,3 @@ public class Empleado {
         return fechaIngreso.format(formatter);
     }
 }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return fechaIngreso.format(formatter);
-    }
-}
