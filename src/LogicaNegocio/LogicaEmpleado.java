@@ -67,7 +67,6 @@ public class LogicaEmpleado extends LogicaBase {
      * Formateador de fechas para serialización y deserialización.
      * <p>Utiliza el patrón "dd/MM/yyyy" para las fechas de ingreso de empleados.</p>
      */
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     // ================================================================================
     // CONSTRUCTOR
