@@ -15,19 +15,74 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.swing.JOptionPane;
 
+// ================================================================================
+// CLASE LogicaCorreo
+// ================================================================================
+
 /**
- * Lógica para envío de correos electrónicos.
+ * Lógica para envío de correos electrónicos mediante protocolo SMTP.
  * 
- * @author Rachell Mora Reyes
+ * <p>Esta clase gestiona la configuración, creación de sesiones y envío de
+ * correos electrónicos con soporte para archivos adjuntos. Utiliza JavaMail API
+ * y se conecta a un servidor SMTP configurado mediante constantes.</p>
+ * 
+ * <p><b>Estado inicial del objeto:</b></p>
+ * <ul>
+ *   <li>propiedades: null (se cargan al crear la sesión SMTP)</li>
+ *   <li>session: null (se crea al enviar un correo)</li>
+ *   <li>adjuntos: ArrayList vacío, listo para almacenar archivos adjuntos</li>
+ * </ul>
+ * 
+ * <p><b>Uso típico:</b> Crear una instancia de Correo con los datos requeridos
+ * (destinatario, asunto, mensaje y opcionalmente archivos adjuntos), luego llamar
+ * a {@link #enviarCorreo(Correo)} para envío síncrono o {@link #enviarCorreoThread(Correo)}
+ * para envío asíncrono con notificación visual.</p>
+ * 
+ * @author Justin Espinoza
+ * @see Entidades.Correo
+ * @see Utilidades.Constantes
  */
 public class LogicaCorreo {
     
-    private Properties propiedades = null;
-    private Session session = null;
-    private final ArrayList<BodyPart> adjuntos = new ArrayList<>();
+    // ================================================================================
+    // ATRIBUTOS
+    // ================================================================================
     
     /**
-     * Carga las propiedades del servidor SMTP.
+     * Propiedades de configuración del servidor SMTP.
+     * <p>Incluye configuración de SSL, host, puerto y autenticación.</p>
+     */
+    private Properties propiedades = null;
+    
+    /**
+     * Sesión SMTP autenticada para el envío de correos.
+     */
+    private Session session = null;
+    
+    /**
+     * Lista de archivos adjuntos a incluir en el correo.
+     * <p>Cada elemento representa un archivo que será anexado al mensaje.</p>
+     */
+    private final ArrayList<BodyPart> adjuntos = new ArrayList<>();
+    
+    // ================================================================================
+    // MÉTODOS PRIVADOS - CONFIGURACIÓN
+    // ================================================================================
+    
+    /**
+     * Carga las propiedades de configuración del servidor SMTP.
+     * 
+     * <p>Configura los parámetros necesarios para la conexión segura con el servidor
+     * de correo, incluyendo:</p>
+     * <ul>
+     *   <li>Habilitación de SSL</li>
+     *   <li>Host y puerto del servidor SMTP (obtenidos de {@link Utilidades.Constantes})</li>
+     *   <li>Autenticación requerida</li>
+     *   <li>Protocolo TLS versión 1.2</li>
+     * </ul>
+     * 
+     * @see Utilidades.Constantes#SMTP_HOST
+     * @see Utilidades.Constantes#SMTP_PORT
      */
     private void cargarPropiedades() {
         propiedades = new Properties();
@@ -39,7 +94,16 @@ public class LogicaCorreo {
     }
     
     /**
-     * Crea la sesión SMTP.
+     * Crea y configura la sesión SMTP autenticada.
+     * 
+     * <p>Carga las propiedades del servidor mediante {@link #cargarPropiedades()} y
+     * establece la autenticación utilizando las credenciales almacenadas en
+     * {@link Utilidades.Constantes}. La sesión resultante se utilizará para
+     * crear y enviar mensajes de correo.</p>
+     * 
+     * @see #cargarPropiedades()
+     * @see Utilidades.Constantes#EMAIL_FROM
+     * @see Utilidades.Constantes#EMAIL_PASSWORD
      */
     private void crearSessionSmtp() {
         cargarPropiedades();
@@ -56,8 +120,22 @@ public class LogicaCorreo {
         );
     }
     
+    // ================================================================================
+    // MÉTODOS PRIVADOS - PROCESAMIENTO DE ADJUNTOS
+    // ================================================================================
+    
     /**
-     * Agrega archivos adjuntos al correo.
+     * Procesa y agrega los archivos adjuntos al correo electrónico.
+     * 
+     * <p>Itera sobre la lista de archivos proporcionados en el objeto Correo,
+     * crea un BodyPart para cada archivo y lo agrega a la lista de adjuntos.
+     * Cada archivo mantiene su nombre original.</p>
+     * 
+     * @param datosCorreo objeto que contiene la información del correo, incluyendo
+     *                    la lista de archivos a adjuntar
+     * @throws MessagingException si ocurre un error al procesar los archivos adjuntos
+     * 
+     * @see Entidades.Correo#getArchivosAdjuntos()
      */
     private void agregarAdjuntos(Correo datosCorreo) throws MessagingException {
         for (File archivo : datosCorreo.getArchivosAdjuntos()) {
@@ -68,8 +146,33 @@ public class LogicaCorreo {
         }
     }
     
+    // ================================================================================
+    // MÉTODOS PÚBLICOS - ENVÍO DE CORREOS
+    // ================================================================================
+    
     /**
-     * Envía un correo electrónico.
+     * Envía un correo electrónico de forma síncrona.
+     * 
+     * <p>Este método realiza las siguientes operaciones:</p>
+     * <ol>
+     *   <li>Crea la sesión SMTP autenticada mediante {@link #crearSessionSmtp()}</li>
+     *   <li>Configura el remitente, destinatario y asunto del mensaje</li>
+     *   <li>Establece el cuerpo del mensaje</li>
+     *   <li>Procesa y agrega archivos adjuntos si existen</li>
+     *   <li>Envía el correo a través del servidor SMTP configurado</li>
+     * </ol>
+     * 
+     * <p><b>Nota:</b> Este método es bloqueante. Para envío asíncrono con notificación
+     * visual, utilizar {@link #enviarCorreoThread(Correo)}.</p>
+     * 
+     * @param datosCorreo objeto que contiene todos los datos del correo a enviar:
+     *                    destinatario, asunto, mensaje y archivos adjuntos opcionales
+     * @throws MessagingException si ocurre un error durante la creación, configuración
+     *                           o envío del mensaje de correo
+     * 
+     * @see #crearSessionSmtp()
+     * @see #agregarAdjuntos(Correo)
+     * @see Entidades.Correo
      */
     public void enviarCorreo(Correo datosCorreo) throws MessagingException {
         crearSessionSmtp();
@@ -98,7 +201,24 @@ public class LogicaCorreo {
     }
     
     /**
-     * Envía correo en un hilo separado.
+     * Envía un correo electrónico de forma asíncrona en un hilo separado.
+     * 
+     * <p>Este método crea y ejecuta un hilo independiente que realiza el envío
+     * del correo mediante {@link #enviarCorreo(Correo)}. Al finalizar, muestra
+     * un cuadro de diálogo con el resultado de la operación:</p>
+     * <ul>
+     *   <li><b>Éxito:</b> Mensaje de confirmación con el email del destinatario</li>
+     *   <li><b>Error:</b> Mensaje con los detalles del error ocurrido</li>
+     * </ul>
+     * 
+     * <p><b>Ventajas:</b> No bloquea el hilo principal de la aplicación, permitiendo
+     * que la interfaz gráfica permanezca responsiva durante el envío del correo.</p>
+     * 
+     * @param datosCorreo objeto que contiene todos los datos del correo a enviar:
+     *                    destinatario, asunto, mensaje y archivos adjuntos opcionales
+     * 
+     * @see #enviarCorreo(Correo)
+     * @see Entidades.Correo
      */
     public void enviarCorreoThread(Correo datosCorreo) {
         Thread hilo = new Thread(() -> {
