@@ -61,6 +61,7 @@ public class LogicaEmpleado extends LogicaBase {
      * <p>Se inicializa al agregar un nuevo empleado para obtener el siguiente ID disponible.</p>
      */
     private IdControl idControl;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
     /**
      * Formateador de fechas para serialización y deserialización.
